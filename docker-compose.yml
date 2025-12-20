@@ -1,0 +1,33 @@
+name: project_nf
+
+services:
+  app:
+   #file used when '--build' flag is used
+   build:
+     context: .
+     dockerfile: dockerfile
+   image: website_nf
+   container_name: website_nf
+   ports:
+    - "8000:8000"
+   volumes:
+    - .:/app
+  
+  #db used for DEV, for PROD consider switch to Cloud DB!
+  # https://www.youtube.com/watch?v=HcgV-8QY-0c&t=534s TIMESTAMP: 1:12:00
+  db:
+   image: postgres:18
+   container_name: postgres-db
+   restart: always
+   environment:
+    POSTGRES_USER: my_user
+    POSTGRES_PASSWORD: my_password
+    POSTGRES_DB: database_nf
+   volumes:
+    - postgres_data:/var/lib/postgresql/data
+   ports:
+    - "5432:5432"
+  
+  #Docker Volume, persists data on container deletion
+  volumes:
+   postgres_data:
