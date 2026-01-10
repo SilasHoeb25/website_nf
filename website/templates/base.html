@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>{% block title %}Website{% endblock %}</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+</head>
+
+<body class="min-h-screen bg-slate-50 text-slate-900">
+
+  <!-- Header / Nav -->
+  <header class="sticky top-0 z-50 border-b bg-white/80 backdrop-blur">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+      <a href="/" class="font-semibold tracking-tight hover:opacity-80">
+        MyWebsite
+      </a>
+  
+      <nav class="flex items-center gap-4 text-sm text-slate-600">
+        <a class="hover:text-slate-900" href="/">Home</a>
+        <a class="hover:text-slate-900" href="/about/">About</a>
+        <a class="hover:text-slate-900" href="/contact/">Contact</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Main -->
+  <main class="mx-auto max-w-6xl px-4 py-6">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-12 border-t bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-6 text-sm text-slate-500">
+      © {% now "Y" %} My Website
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

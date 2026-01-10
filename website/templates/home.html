@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  {% include "partials/_hero_gallery.html" %}
+
+  <section class="mt-8 grid gap-6 md:grid-cols-3">
+    <div class="rounded-2xl bg-white p-6 shadow">
+      <h2 class="font-semibold">Section 1</h2>
+      <p class="mt-2 text-sm text-slate-600">
+        Content below the gallery.
+      </p>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 shadow">
+      <h2 class="font-semibold">Section 2</h2>
+      <p class="mt-2 text-sm text-slate-600">
+        Ready for HTMX.
+      </p>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 shadow">
+      <h2 class="font-semibold">Section 3</h2>
+      <p class="mt-2 text-sm text-slate-600">
+        Filters, tables, or cards.
+      </p>
+    </div>
+  </section>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  (function () {
+    const gallery = document.getElementById("hero-gallery");
+    const slides = Array.from(document.querySelectorAll(".gallery-slide"));
+    const prevBtn = document.getElementById("gallery-prev");
+    const nextBtn = document.getElementById("gallery-next");
+
+    if (!gallery || slides.length <= 1) return;
+
+    const INTERVAL_MS = 6000; // longer auto-change
+    const SWIPE_THRESHOLD_PX = 40;
+
+    let index = 0;
+    let timer = null;
+    let isPaused = false;
+
+    // Touch state
+    let touchStartX = null;
+    let touchStartY = null;
+
+    function show(nextIndex) {
+      // hide current
+      slides[index].classList.remove("opacity-100");
+      slides[index].classList.add("opacity-0");
+
+      // show next
+      index = (nextIndex + slides.length) % slides.length;
+      slides[index].classList.remove("opacity-0");
+      slides[index].classList.add("opacity-100");
+    }
+
+    function next() { show(index + 1); }
+    function prev() { show(index - 1); }
+
+    function start() {
+      stop();
+      timer = setInterval(() => {
+        if (!isPaused) next();
+      }, INTERVAL_MS);
+    }
+
+    function stop() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    function resetTimer() {
+      start();
+    }
+
+    // Buttons
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        prev();
+        resetTimer();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        next();
+        resetTimer();
+      });
+    }
+
+    // Pause on hover / focus
+    gallery.addEventListener("mouseenter", () => { isPaused = true; });
+    gallery.addEventListener("mouseleave", () => { isPaused = false; });
+    gallery.addEventListener("focusin", () => { isPaused = true; });
+    gallery.addEventListener("focusout", () => { isPaused = false; });
+
+    // Swipe support (mobile)
+    gallery.addEventListener("touchstart", (e) => {
+      if (!e.touches || e.touches.length !== 1) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isPaused = true; // pause while finger is down
+    }, { passive: true });
+
+    gallery.addEventListener("touchmove", (e) => {
+      // don't prevent scrolling; keep passive
+    }, { passive: true });
+
+    gallery.addEventListener("touchend", (e) => {
+      if (touchStartX === null || touchStartY === null) {
+        isPaused = false;
+        return;
+      }
+
+      const touch = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : null;
+      if (!touch) {
+        touchStartX = touchStartY = null;
+        isPaused = false;
+        return;
+      }
+
+      const dx = touch.clientX - touchStartX;
+      const dy = touch.clientY - touchStartY;
+
+      // Horizontal swipe only (ignore mostly-vertical gestures)
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) >= SWIPE_THRESHOLD_PX) {
+        if (dx < 0) next(); // swipe left -> next
+        else prev();        // swipe right -> prev
+        resetTimer();
+      }
+
+      touchStartX = touchStartY = null;
+      isPaused = false;
+    }, { passive: true });
+
+    // Init
+    slides.forEach((img, i) => {
+      if (i === 0) {
+        img.classList.add("opacity-100");
+        img.classList.remove("opacity-0");
+      } else {
+        img.classList.add("opacity-0");
+        img.classList.remove("opacity-100");
+      }
+    });
+
+    start();
+  })();
+</script>
+{% endblock %}

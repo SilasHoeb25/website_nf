@@ -24,10 +24,10 @@ services:
     POSTGRES_PASSWORD: my_password
     POSTGRES_DB: database_nf
    volumes:
-    - postgres_data:/var/lib/postgresql/data
+    - postgres_data:/var/lib/postgresql
    ports:
     - "5432:5432"
   
   #Docker Volume, persists data on container deletion
-  volumes:
-   postgres_data:
+volumes:
+  postgres_data:
