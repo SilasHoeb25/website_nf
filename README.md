@@ -9,33 +9,47 @@ The Website is available on localhost:8000
  - code changes are automatically reflected due to volume mounting
 Start:
  1. start Docker Engine
- 2. open new Terminal, from the Project root run: ```docker compose up```
+ 2. open new Terminal, from the Project root run: 
+ ```console
+ docker compose up
+ ```
  keep it running!
+
  3. open new Terminal, from the Project root run tailwind in Watchmode:
-
- ```console C:\dev\website_nf> npx tailwindcss -i .\website\static\src\tailwind.css -o .\website\static\css\tailwind.css --watch```
- 
+ ```console
+ C:\dev\website_nf> npx tailwindcss -i .\website\static\src\tailwind.css -o .\website\static\css\tailwind.css --watch
+ ```
  keep it running!
 
- Happy Coding!
+ **Happy Coding!**
 
- ### First startup on a New Environment
+ ### First Startup for DEV on a New Environment
 
  - You cloned the repository for the first time
  - No Docker images or containers yet
 
- 1. Run Docker desktop
- 2. From the project root run:```docker compose up --build ```
+ 1. Run Docker Engine
+ 2. From the project root run:
+ ```console
+ docker compose up --build
+ ```
  3. From the project root run database migrations in the container:
 
  ```console
 docker exec -it website_nf python manage.py makemigrations
   ```
 
- ```docker exec -it website_nf python manage.py migrate```
+ ```console
+ docker exec -it website_nf python manage.py migrate
+ ```
 
  4. Create a superuser (admin)
+ ```console
+ docker exec -it website_nf python manage.py createsuperuser
+ ```
+ 5. open new Terminal, from the Project root run tailwind in Watchmode:
+ ```console
+ C:\dev\website_nf> npx tailwindcss -i .\website\static\src\tailwind.css -o .\website\static\css\tailwind.css --watch
+ ```
 
- ```docker exec -it website_nf python manage.py createsuperuser```
-
-
+ **Happy Coding!**
