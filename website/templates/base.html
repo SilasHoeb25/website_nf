@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
 
 
-  <!-- HTMX -->
+  <!-- HTMX CDN (Content Delivery Network)-->
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 </head>
 
@@ -21,20 +21,46 @@
   <!-- Header / Nav -->
   <header class="sticky top-0 z-50 border-b bg-white/80 backdrop-blur">
     <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-      <a href="/" class="font-semibold tracking-tight hover:opacity-80">
+      
+        <a 
+        href="/" 
+        class="font-semibold tracking-tight hover:opacity-80">
         MyWebsite
-      </a>
+        </a>
   
       <nav class="flex items-center gap-4 text-sm text-slate-600">
-        <a class="hover:text-slate-900" href="/">Home</a>
-        <a class="hover:text-slate-900" href="/about/">About</a>
-        <a class="hover:text-slate-900" href="/contact/">Contact</a>
+        <a
+        href="/" 
+        class="hover:text-slate-900" 
+        >
+        Home
+        </a>
+        
+        <a 
+        href="/about/"
+        class="hover:text-slate-900" 
+        hx-get="/about/"
+        hx-target="#main-content"
+        hx-swap="innerHTML"
+        hx-push-url="true">
+        About
+        </a>
+
+        <a 
+        href="/contact/"
+        class="hover:text-slate-900" >
+        Contact
+        </a>
+
       </nav>
     </div>
   </header>
   
   <!-- Main -->
   <main class="mx-auto max-w-6xl px-4 py-6">
+
+    {% include "partials/_hero_gallery.html" %}
+    <div id= "main-content">
     {% block content %}
     {% endblock %}
   </main>
@@ -45,7 +71,11 @@
       © {% now "Y" %} My Website
     </div>
   </footer>
-
-  {% block scripts %}{% endblock %}
+  
+  <script src="{% static 'js/hero_gallery.js' %}" defer></script>
+  
+  <!-- Additional JS injected from a page -->
+  {% block scripts %}
+  {% endblock %}
 </body>
 </html>

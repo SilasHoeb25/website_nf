@@ -1,11 +1,11 @@
 from django.shortcuts import render
 
 def home(request):
+    if request.headers.get("HX-Request") == "true":
+        return render(request, "partials/_home_content.html")
     return render(request, "home.html")
 
-def hello_partial(request):
-    return HttpResponse("""
-        <div class="p-3 bg-green-100 border border-green-300 rounded">
-            HTMX response loaded without a page reload 🚀
-        </div>
-    """)
+def about(request):
+    if request.headers.get("HX-Request") == "true":
+        return render(request, "partials/_about_content.html")
+    return render(request, "about.html")
