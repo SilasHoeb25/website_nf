@@ -9,11 +9,10 @@ The Website is available on localhost:8000
  - code changes are automatically reflected due to volume mounting
 Start:
  1. start Docker Engine
- 2. open new Terminal, from the Project root run:
- bash```docker compose up```
+ 2. open new Terminal, from the Project root run: ```docker compose up```
  keep it running!
  3. open new Terminal, from the Project root run tailwind in Watchmode:
- ```bash C:\dev\website_nf> npx tailwindcss -i .\website\static\src\tailwind.css -o .\website\static\css\tailwind.css --watch```
+ ```console C:\dev\website_nf> npx tailwindcss -i .\website\static\src\tailwind.css -o .\website\static\css\tailwind.css --watch```
  keep it running!
 
  Happy Coding!
