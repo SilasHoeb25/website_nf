@@ -26,14 +26,16 @@ Start:
 
  1. Run Docker desktop
  2. From the project root run:```docker compose up --build ```
- 3. Run database migrations in the container:
+ 3. From the project root run database migrations in the container:
 
- ```bash docker exec -it website_nf python manage.py makemigrations```
+ ```console
+docker exec -it website_nf python manage.py makemigrations
+  ```
 
- ```bash docker exec -it website_nf python manage.py migrate```
+ ```docker exec -it website_nf python manage.py migrate```
 
  4. Create a superuser (admin)
 
- ```bash docker exec -it website_nf python manage.py createsuperuser```
+ ```docker exec -it website_nf python manage.py createsuperuser```
 
 
