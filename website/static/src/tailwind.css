@@ -1,0 +1,4 @@
+/*Load tailwind core, Enable typography plugin, Use this config file*/
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@config "../../../tailwind.config.js";

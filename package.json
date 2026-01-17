@@ -1,0 +1,26 @@
+{
+  "name": "website_nf",
+  "version": "1.0.0",
+  "description": "\\# website\\_nf",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SilasHoeb25/website_nf.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SilasHoeb25/website_nf/issues"
+  },
+  "homepage": "https://github.com/SilasHoeb25/website_nf#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/typography": "^0.5.19",
+    "tailwindcss": "^4.1.18"
+  }
+}

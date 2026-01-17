@@ -4,23 +4,27 @@ __pycache__/
 *.pyo
 *.pyd
 *.sqlite3
-
 # Django
 .env
 staticfiles/
 media/
-
-# Virtual Environments (falls später genutzt)
+# Virtual Environments
 .venv/
 venv/
 
 # Docker
 *.log
-
 # OS
 Thumbs.db
 .DS_Store
-
 # IDE
 .vscode/
 .idea/
+
+# Node / Tailwind
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# Tailwind cache (if any)
+.tailwindcache

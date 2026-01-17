@@ -7,11 +7,14 @@
   <title>{% block title %}Website{% endblock %}</title>
 
   <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  {% load static %}
+<link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+
 
   <!-- HTMX -->
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 </head>
+
 
 <body class="min-h-screen bg-slate-50 text-slate-900">
 

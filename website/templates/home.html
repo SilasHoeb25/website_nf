@@ -1,33 +1,49 @@
 {% extends "base.html" %}
-
 {% block title %}Home{% endblock %}
 
 {% block content %}
   {% include "partials/_hero_gallery.html" %}
 
-  <section class="mt-8 grid gap-6 md:grid-cols-3">
-    <div class="rounded-2xl bg-white p-6 shadow">
-      <h2 class="font-semibold">Section 1</h2>
-      <p class="mt-2 text-sm text-slate-600">
-        Content below the gallery.
-      </p>
-    </div>
+  <section class="mt-8">
+    <div class="grid gap-6 lg:grid-cols-[1fr_20rem] lg:items-start">
+      <!-- Main content (always first) -->
+      <div class="prose prose-slate prose-h1:text-3xl prose-h2:text-xl max-w-none">
+        <h1>Header 1</h1>
+        <p>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+        </p>
+        <h2>Header 2</h2>
+        <p>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+        </p>
+      </div>
 
-    <div class="rounded-2xl bg-white p-6 shadow">
-      <h2 class="font-semibold">Section 2</h2>
-      <p class="mt-2 text-sm text-slate-600">
-        Ready for HTMX.
-      </p>
-    </div>
+      <!-- Sidebar (below on mobile, right on desktop, aligned to top) -->
+      <aside class="lg:sticky lg:top-24">
+        <div class="rounded-2xl bg-white p-5 shadow border border-slate-100">
+          <h2 class="text-sm font-semibold text-slate-900">Contact</h2>
 
-    <div class="rounded-2xl bg-white p-6 shadow">
-      <h2 class="font-semibold">Section 3</h2>
-      <p class="mt-2 text-sm text-slate-600">
-        Filters, tables, or cards.
-      </p>
+          <div class="mt-3 space-y-2 text-sm text-slate-600">
+            <div>
+              <div class="font-medium text-slate-700">Email</div>
+              <div>contact@example.com</div>
+            </div>
+            <div>
+              <div class="font-medium text-slate-700">Phone</div>
+              <div>+41 00 000 00 00</div>
+            </div>
+            <div>
+              <div class="font-medium text-slate-700">Office</div>
+              <div>Zürich, Switzerland</div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   </section>
 {% endblock %}
+
+
 
 
 {% block scripts %}
@@ -40,18 +56,30 @@
 
     if (!gallery || slides.length <= 1) return;
 
-    const INTERVAL_MS = 6000; // longer auto-change
+    const INTERVAL_MS = 7000;
     const SWIPE_THRESHOLD_PX = 40;
 
     let index = 0;
     let timer = null;
     let isPaused = false;
 
-    // Touch state
     let touchStartX = null;
     let touchStartY = null;
 
-    function show(nextIndex) {
+    function setTransitionEnabled(enabled) {
+      slides.forEach((img) => {
+        // Tailwind class on your imgs: transition-opacity duration-1000
+        // We remove/add transition-opacity so manual changes are instant.
+        if (enabled) img.classList.add("transition-opacity");
+        else img.classList.remove("transition-opacity");
+      });
+    }
+
+    // animated=true => keep smooth fade (auto)
+    // animated=false => instant swap (click/swipe)
+    function show(nextIndex, { animated = true } = {}) {
+      setTransitionEnabled(animated);
+
       // hide current
       slides[index].classList.remove("opacity-100");
       slides[index].classList.add("opacity-0");
@@ -60,15 +88,21 @@
       index = (nextIndex + slides.length) % slides.length;
       slides[index].classList.remove("opacity-0");
       slides[index].classList.add("opacity-100");
+
+      // restore transition for future auto-fades
+      if (!animated) {
+        // next tick so the instant change applies first
+        requestAnimationFrame(() => setTransitionEnabled(true));
+      }
     }
 
-    function next() { show(index + 1); }
-    function prev() { show(index - 1); }
+    function next(animated = true) { show(index + 1, { animated }); }
+    function prev(animated = true) { show(index - 1, { animated }); }
 
     function start() {
       stop();
       timer = setInterval(() => {
-        if (!isPaused) next();
+        if (!isPaused) next(true); // auto uses fade
       }, INTERVAL_MS);
     }
 
@@ -77,23 +111,11 @@
       timer = null;
     }
 
-    function resetTimer() {
-      start();
-    }
+    function resetTimer() { start(); }
 
-    // Buttons
-    if (prevBtn) {
-      prevBtn.addEventListener("click", () => {
-        prev();
-        resetTimer();
-      });
-    }
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
-        next();
-        resetTimer();
-      });
-    }
+    // Buttons (instant)
+    if (prevBtn) prevBtn.addEventListener("click", () => { prev(false); resetTimer(); });
+    if (nextBtn) nextBtn.addEventListener("click", () => { next(false); resetTimer(); });
 
     // Pause on hover / focus
     gallery.addEventListener("mouseenter", () => { isPaused = true; });
@@ -101,16 +123,12 @@
     gallery.addEventListener("focusin", () => { isPaused = true; });
     gallery.addEventListener("focusout", () => { isPaused = false; });
 
-    // Swipe support (mobile)
+    // Swipe (instant)
     gallery.addEventListener("touchstart", (e) => {
       if (!e.touches || e.touches.length !== 1) return;
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
-      isPaused = true; // pause while finger is down
-    }, { passive: true });
-
-    gallery.addEventListener("touchmove", (e) => {
-      // don't prevent scrolling; keep passive
+      isPaused = true;
     }, { passive: true });
 
     gallery.addEventListener("touchend", (e) => {
@@ -129,10 +147,9 @@
       const dx = touch.clientX - touchStartX;
       const dy = touch.clientY - touchStartY;
 
-      // Horizontal swipe only (ignore mostly-vertical gestures)
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) >= SWIPE_THRESHOLD_PX) {
-        if (dx < 0) next(); // swipe left -> next
-        else prev();        // swipe right -> prev
+        if (dx < 0) next(false);
+        else prev(false);
         resetTimer();
       }
 
