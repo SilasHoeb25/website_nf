@@ -1,0 +1,66 @@
+{# accounts/templates/accounts/signup.html #}
+{% extends "base.html" %}
+
+{% block title %}
+Registrieren
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-md px-4 py-10">
+  <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    <h1 class="text-2xl font-semibold text-slate-900">Registrieren</h1>
+    <p class="mt-1 text-sm text-slate-600">
+      Erstelle deinen Account, um Timeslots zu buchen.
+    </p>
+
+    <form method="post" class="mt-6 space-y-4">
+      {% csrf_token %}
+
+      {# ADD Tailwind Classes for Form Fields#}
+      {% if form.non_field_errors %}
+        <div class="rounded-lg bg-red-50 p-3 text-sm text-red-700 ring-1 ring-red-200">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      {% for field in form %}
+        <div>
+          <label for="{{ field.id_for_label }}"
+                 class="block text-sm font-medium text-slate-700">
+            {{ field.label }}
+          </label>
+
+          <div class="mt-1">
+            {{ field }}
+          </div>
+
+          {% if field.help_text %}
+            <div class="mt-1 text-xs text-slate-500 [&_ul]:list-disc [&_ul]:ml-5 [&_li]:mt-1">
+              {{ field.help_text|safe }}
+            </div>
+          {% endif %} 
+
+          {% for error in field.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+
+
+      <button type="submit"
+              class="mt-2 w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900/20">
+        Account erstellen
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-slate-600">
+      Schon registriert?
+      <a class="font-medium text-slate-900 underline underline-offset-4 hover:text-slate-700"
+         href="{% url 'login' %}">
+        Login
+      </a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+

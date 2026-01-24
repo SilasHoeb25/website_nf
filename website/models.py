@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-
+"""
 class SlotStatus(models.TextChoices):
     OPEN = "open", "Open"
     HIDDEN = "hidden", "Hidden"
@@ -110,3 +110,4 @@ class Booking(models.Model):
         # User may cancel up to 24h before slot start
         return timezone.now() <= self.slot.start_at - timezone.timedelta(hours=24)
 
+"""

@@ -1,5 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{%block hero%}
+    {% include "partials/_hero_gallery.html" %}
+{%endblock%}
 
 {% block content %}
   {% include "partials/_home_content.html" %}
