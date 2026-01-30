@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Book timeslot{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl px-4 py-8">
+  <a href="{% url 'timeslots' %}" class="text-sm text-slate-600 hover:text-slate-900">
+    ← Back to timeslots
+  </a>
+
+  <div class="mt-4 rounded-2xl border bg-white p-6 shadow-sm">
+    <h1 class="text-2xl font-semibold tracking-tight">
+      Book: {{ timeslot.event_name }}
+    </h1>
+
+    <div class="mt-2 text-sm text-slate-700">
+      <div>
+        <span class="font-medium">{{ timeslot.start_at|date:"D, d.m.Y H:i" }}</span>
+        –
+        <span class="font-medium">{{ timeslot.end_at|date:"H:i" }}</span>
+      </div>
+      <div class="text-slate-600">{{ timeslot.address }}</div>
+    </div>
+
+    {% if form.non_field_errors %}
+      <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="post" class="mt-6 space-y-4">
+      {% csrf_token %}
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700">
+          Message (optional)
+        </label>
+        <p class="mt-1 text-xs text-slate-500">
+          Add anything the organizer should know.
+        </p>
+
+        <div class="mt-2">
+          {{ form.message }}
+        </div>
+
+        {% if form.message.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ form.message.errors }}</p>
+        {% endif %}
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+        >
+          Confirm booking
+        </button>
+
+        <a
+          href="{% url 'timeslots' %}"
+          class="inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+        >
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

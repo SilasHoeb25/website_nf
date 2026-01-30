@@ -34,20 +34,10 @@
         <nav class="flex items-center gap-4 text-sm text-slate-600">
           <a href="/" class="hover:text-slate-900">Home</a>
   
-          <a
-            href="/about/"
-            class="hover:text-slate-900"
-            hx-get="/about/"
-            hx-target="#main-content"
-            hx-swap="innerHTML"
-            hx-push-url="true"
-          >
-            About
-          </a>
+          <a href="/about/" class="hover:text-slate-900">About</a>
+
+          <a href="/booking/" class="hover:text-slate-900">Booking</a>
   
-          <a href="/contact/" class="hover:text-slate-900">
-            Contact
-          </a>
         </nav>
       </div>
   
@@ -58,7 +48,9 @@
           
         <!-- Username if authenticated-->
           <span class="text-sm text-slate-600">
-            {{ user.username }}
+            <a href="{% url 'accounts:account' %}" class="text-sm text-slate-600 hover:text-slate-900">
+              {{ user.username }}
+            </a>
           </span>
       
           <!-- Logout = POST -->

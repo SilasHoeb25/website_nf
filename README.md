@@ -59,4 +59,8 @@ docker exec -it website_nf python manage.py makemigrations
 
  **Happy Coding!**
 
+[1, 2, 3]   list,
+(1, 2, 3)   tuple 
+{1, 2, 3}   set 
+{'key': 'value'}  dictionary
 

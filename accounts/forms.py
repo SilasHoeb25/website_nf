@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User
 
+
 BASE_INPUT_CLASSES = (
     "block w-full rounded-lg border border-slate-300 bg-white "
     "px-3 py-2 text-sm shadow-sm "
@@ -39,3 +40,13 @@ class LoginForm(AuthenticationForm):
         # falls irgendwo help_text gesetzt wäre: entfernen
         for name in self.fields:
             self.fields[name].help_text = ""
+
+
+class EmailChangeForm(forms.Form):
+    email = forms.EmailField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"].widget.attrs.update({"class": BASE_INPUT_CLASSES})
+        self.fields["email"].help_text = ""
+

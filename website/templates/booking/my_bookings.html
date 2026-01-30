@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}My bookings{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-4xl px-4 py-8">
+  <h1 class="text-2xl font-semibold tracking-tight">My bookings</h1>
+  <p class="mt-1 text-sm text-slate-600">
+    Your upcoming booked timeslots.
+  </p>
+
+  <div class="mt-6 space-y-3">
+    {% if bookings %}
+      {% for booking in bookings %}
+        <div
+          class="rounded-2xl border bg-white p-4 shadow-sm
+          {% if booking.timeslot.status == 'cancelled' or booking.status == 'cancelled' %}
+            opacity-75
+          {% endif %}"
+        >
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h2 class="truncate text-lg font-semibold">
+                  {{ booking.timeslot.event_name }}
+                </h2>
+
+                {# STATUS BADGE #}
+                {% if booking.timeslot.status == "cancelled" %}
+                  <span class="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                    Event abgesagt
+                  </span>
+
+                {% elif booking.status == "cancelled" %}
+                  <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                    Storniert
+                  </span>
+
+                {% else %}
+                  <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">
+                    Bestätigt
+                  </span>
+                {% endif %}
+              </div>
+
+              <div class="mt-1 text-sm text-slate-700">
+                <span class="font-medium">
+                  {{ booking.timeslot.start_at|date:"D, d.m.Y H:i" }}
+                </span>
+                –
+                <span class="font-medium">
+                  {{ booking.timeslot.end_at|date:"H:i" }}
+                </span>
+              </div>
+
+              <div class="mt-1 text-sm text-slate-600">
+                {{ booking.timeslot.address }}
+              </div>
+
+              {% if booking.message %}
+                <p class="mt-2 text-sm text-slate-600">
+                  <span class="font-medium text-slate-700">Your message:</span>
+                  {{ booking.message }}
+                </p>
+              {% endif %}
+
+              {# EXTRA INFO TEXT #}
+              {% if booking.timeslot.status == "cancelled" %}
+                <p class="mt-2 text-sm text-red-700">
+                  This event was cancelled by the organizer.
+                </p>
+
+              {% elif booking.status == "cancelled" and booking.cancelled_at %}
+                <p class="mt-2 text-sm text-amber-700">
+                  You cancelled this booking on
+                  {{ booking.cancelled_at|date:"d.m.Y H:i" }}.
+                </p>
+              {% endif %}
+            </div>
+
+            <div class="shrink-0">
+              {% if booking.status == "confirmed" and booking.timeslot.status != "cancelled" %}
+                <form method="post" action="{% url 'booking_cancel' booking.id %}">
+                  {% csrf_token %}
+                  <button
+                    type="submit"
+                    class="inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+                  >
+                    Cancel booking
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="rounded-2xl border bg-white p-6 text-sm text-slate-600">
+        You have no upcoming bookings.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

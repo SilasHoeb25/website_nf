@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load dict_extras %}
+
+{% block title %}
+  Timeslots
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-4xl px-4 py-8">
+
+  <!-- =========================
+       Header / Page actions
+       ========================= -->
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight">Available timeslots</h1>
+
+      <!-- Staff-only: Create Timeslot button -->
+      {% if user.is_authenticated and user.is_staff %}
+        <a
+          href="{% url 'timeslot_create' %}"
+          class="mt-2 inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+        >
+          + Create Timeslot
+        </a>
+      {% endif %}
+
+      <p class="mt-2 text-sm text-slate-600">Pick a slot and book it.</p>
+    </div>
+  </div>
+
+  <div class="mt-6 space-y-3">
+    {% if timeslots %}
+      {% for ts in timeslots %}
+
+        <!-- =========================
+             Timeslot card
+             ========================= -->
+        <div class="rounded-2xl border bg-white p-4 shadow-sm {% if ts.status == 'cancelled' %}opacity-75{% endif %}">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+
+            <!-- =========================
+                 Card left side: details
+                 ========================= -->
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h2 class="truncate text-lg font-semibold">{{ ts.event_name }}</h2>
+
+                <!-- =========================
+                     Status / Capacity badge
+                     ========================= -->
+                {% if ts.status == "cancelled" %}
+                  <span class="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
+                    Abgesagt
+                  </span>
+                {% else %}
+                  <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">
+                    {{ ts.confirmed_count|default:0 }}/{{ ts.capacity }} Plätze besetzt
+                  </span>
+                {% endif %}
+              </div>
+
+              <div class="mt-1 text-sm text-slate-700">
+                <span class="font-medium">
+                  {{ ts.start_at|date:"D, d.m.Y H:i" }}
+                </span>
+                –
+                <span class="font-medium">
+                  {{ ts.end_at|date:"H:i" }}
+                </span>
+              </div>
+
+              <div class="mt-1 text-sm text-slate-600">
+                {{ ts.address }}
+              </div>
+
+              {% if ts.event_description %}
+                <p class="mt-2 text-sm text-slate-600">
+                  {{ ts.event_description }}
+                </p>
+              {% endif %}
+            </div>
+
+            <!-- =========================
+                 Card right side: actions / buttons
+                 ========================= -->
+            <div class="shrink-0 space-y-2">
+
+              <!-- =========================
+                   Staff actions:
+                   - Ändern (edit timeslot)
+                   - Event absagen (cancel whole timeslot)
+                   
+                   User actions:
+                   - Buchen/Absagen
+                   ========================= -->
+              {% if user.is_authenticated and user.is_staff %}
+
+                {% if ts.status == "cancelled" %}
+                  <span class="text-sm text-red-700 font-medium">
+                    Event abgesagt
+                  </span>
+                {% else %}
+                  <a
+                    href="{% url 'timeslot_edit' ts.pk %}"
+                    class="w-full inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+                  >
+                    Ändern
+                  </a>
+
+                  <form method="post" action="{% url 'timeslot_cancel' ts.pk %}">
+                    {% csrf_token %}
+                    <button
+                      type="submit"
+                      class="w-full inline-flex items-center justify-center rounded-xl border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+                    >
+                      Event absagen
+                    </button>
+                  </form>
+                {% endif %}
+
+              {% else %}
+
+                <!-- =========================
+                     User actions:
+                     - Cancelled event => no booking actions
+                     - If already booked => Stornieren
+                     - If full => Ausgebucht
+                     - Else => Buchen
+                     ========================= -->
+                {% if ts.status == "cancelled" %}
+                  <span class="text-sm text-red-700 font-medium">
+                    Event abgesagt
+                  </span>
+
+                {% else %}
+                  {% with booking_id=my_booking_id_by_timeslot|get_item:ts.id %}
+                    {% if booking_id %}
+                      <form method="post" action="{% url 'booking_cancel' booking_id %}">
+                        {% csrf_token %}
+                        <button
+                          type="submit"
+                          class="w-full inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50"
+                        >
+                          Stornieren
+                        </button>
+                      </form>
+
+                    {% elif ts.free_spots_db <= 0 %}
+                      <span class="w-full inline-flex items-center justify-center rounded-xl border px-4 py-2 text-sm text-slate-600">
+                        Ausgebucht!
+                      </span>
+
+                    {% else %}
+                      <a
+                        href="{% url 'timeslot_book' ts.pk %}"
+                        class="w-full inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+                      >
+                        Buchen
+                      </a>
+                    {% endif %}
+                  {% endwith %}
+                {% endif %}
+
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+
+    {% else %}
+      <div class="rounded-2xl border bg-white p-6 text-sm text-slate-600">
+        No available timeslots right now.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
