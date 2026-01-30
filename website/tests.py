@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from website.models import Timeslot
+from website.models import Timeslot, Booking
+from django.contrib.auth import get_user_model
 
 class BookingAuthTest(TestCase):
     def test_booking_requires_login(self):
@@ -21,11 +22,6 @@ class BookingAuthTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response.url)
 
-from django.contrib.auth import get_user_model
-from django.test import TestCase
-from django.urls import reverse
-from django.utils import timezone
-from website.models import Timeslot, Booking
 
 User = get_user_model()
 
